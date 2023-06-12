@@ -69,19 +69,19 @@ namespace Simple_Calculator
             {
                 case "+":
                     op = Operation.Addition;
-                    isFirst = !isFirst;
+                    isFirst = false;
                     break;
                 case "-":  
                     op = Operation.Subtraction;
-                    isFirst = !isFirst;
+                    isFirst = false;
                     break;
                 case "*":
                     op = Operation.Multiplication;
-                    isFirst = !isFirst;
+                    isFirst = false;
                     break; 
                 case "/":
                     op = Operation.Division;
-                    isFirst = !isFirst;
+                    isFirst = false;
                     break;
                 default:
                     op = Operation.None;
@@ -91,16 +91,39 @@ namespace Simple_Calculator
 
         private void EqualsButton_Click(object sender, RoutedEventArgs e)
         {
-            Button button = (Button )sender;
+            Button button = (Button)sender;
 
             switch (op)
             {
                 case Operation.Addition:
                     resultnum = inp1 + inp2;
+                    inp1 = resultnum;
+                    inp2 = 0;
                     result.Content = (resultnum);
+                    isFirst = true;
+                    break;
+                case Operation.Subtraction:
+                    resultnum = inp1 - inp2;
+                    inp1 = resultnum;
+                    inp2 = 0;
+                    result.Content = (resultnum);
+                    isFirst = true;
+                    break;
+                case Operation.Multiplication:
+                    resultnum = inp1 * inp2;
+                    inp1 = resultnum;
+                    inp2 = 0;
+                    result.Content = (resultnum);
+                    isFirst = true;
+                    break;
+                case Operation.Division:   
+                    resultnum = inp1 / inp2;
+                    inp1 = resultnum;
+                    inp2 = 0;
+                    result.Content = (resultnum);
+                    isFirst = true;
                     break;
             }
-
         }
 
 
