@@ -20,7 +20,6 @@ namespace Simple_Calculator
     /// </summary>
     public partial class MainWindow : Window
     {
-
         double inp1, inp2, resultnum = 0;
         bool isFirst = true;
         bool equalsClicked = false;
@@ -57,7 +56,7 @@ namespace Simple_Calculator
             }
             else
             {
-                expression.Content = Expression_Updater(currExpr, content.ToString());
+                Expression_Updater(currExpr, content.ToString());
                 contentVal = Number_Handler(inp2, contentVal);
                 inp2 = contentVal;
             }
@@ -114,38 +113,37 @@ namespace Simple_Calculator
                     resultnum = inp1 + inp2;
                     inp1 = resultnum;
                     inp2 = 0;
-                    result.Content = (resultnum);
                     isFirst = true;
                     break;
                 case Operation.Subtraction:
                     resultnum = inp1 - inp2;
                     inp1 = resultnum;
                     inp2 = 0;
-                    result.Content = (resultnum);
                     isFirst = true;
                     break;
                 case Operation.Multiplication:
                     resultnum = inp1 * inp2;
                     inp1 = resultnum;
                     inp2 = 0;
-                    result.Content = (resultnum);
                     isFirst = true;
                     break;
                 case Operation.Division:   
                     resultnum = inp1 / inp2;
                     inp1 = resultnum;
                     inp2 = 0;
-                    result.Content = (resultnum);
                     isFirst = true;
                     break;
                 case Operation.Modulo:
                     resultnum = inp1 % inp2;
                     inp1 = resultnum;
                     inp2 = 0;
-                    result.Content = (resultnum);
                     isFirst = true;
                     break;
             }
+            expression.Content = currExpr + " = ";
+            currExpr = resultnum.ToString();
+            result.Content = resultnum;
+
         }
 
         private double Number_Handler(double currentInp, double newInp)
