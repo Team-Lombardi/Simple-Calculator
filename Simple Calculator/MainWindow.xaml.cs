@@ -23,6 +23,8 @@ namespace Simple_Calculator
 
         double inp1, inp2, resultnum = 0;
         bool isFirst = true;
+        bool equalsClicked = false;
+        string currExpr = "";
         public enum Operation
         {   
             None,
@@ -30,12 +32,14 @@ namespace Simple_Calculator
             Subtraction,
             Multiplication,
             Division,
+            Modulo,
         }
         Operation op = Operation.None;
 
         public MainWindow()
         {
             InitializeComponent();
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
 
         private void NumberButton_Click(object sender, RoutedEventArgs e)
@@ -47,11 +51,13 @@ namespace Simple_Calculator
 
             if (isFirst)
             {
+                expression.Content = Expression_Updater(currExpr, content.ToString());
                 contentVal = Number_Handler(inp1, contentVal);
                 inp1 = contentVal;
             }
             else
             {
+                expression.Content = Expression_Updater(currExpr, content.ToString());
                 contentVal = Number_Handler(inp2, contentVal);
                 inp2 = contentVal;
             }
@@ -70,18 +76,27 @@ namespace Simple_Calculator
                 case "+":
                     op = Operation.Addition;
                     isFirst = false;
+                    expression.Content = Expression_Updater(currExpr, " + ");
                     break;
                 case "-":  
                     op = Operation.Subtraction;
                     isFirst = false;
+                    expression.Content = Expression_Updater(currExpr, " - ");
                     break;
                 case "*":
                     op = Operation.Multiplication;
                     isFirst = false;
-                    break; 
+                    expression.Content = Expression_Updater(currExpr, " x ");
+                    break;
                 case "/":
                     op = Operation.Division;
                     isFirst = false;
+                    expression.Content = Expression_Updater(currExpr, " / ");
+                    break;
+                case "Modulo":
+                    op = Operation.Modulo; 
+                    isFirst = false;
+                    expression.Content = Expression_Updater(currExpr, " mod ");
                     break;
                 default:
                     op = Operation.None;
@@ -123,13 +138,37 @@ namespace Simple_Calculator
                     result.Content = (resultnum);
                     isFirst = true;
                     break;
+                case Operation.Modulo:
+                    resultnum = inp1 % inp2;
+                    inp1 = resultnum;
+                    inp2 = 0;
+                    result.Content = (resultnum);
+                    isFirst = true;
+                    break;
             }
         }
-
 
         private double Number_Handler(double currentInp, double newInp)
         {
             return (currentInp * 10 + newInp);
+        }
+
+        private string Expression_Updater(string curr, string entry)
+        {
+                currExpr = curr + entry;
+                return currExpr;  
+        }
+
+        private void ClearerButton_Click(object sender,  EventArgs e)
+        {
+            Button button = (Button)sender;
+
+            inp1 = inp2 = resultnum = 0;
+            isFirst = true;
+            op = Operation.None;
+            currExpr = "";
+            result.Content = resultnum;
+            expression.Content = "";
         }
     }
 }
