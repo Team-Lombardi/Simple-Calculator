@@ -20,19 +20,21 @@ namespace Simple_Calculator
     /// </summary>
     public partial class MainWindow : Window
     {
-        double inp1, inp2, resultnum = 0;
-        bool isFirst = true;
-        bool isDecimal = false;
-        string currExpr = "";
         public enum Operation
-        {   
+        {
             None,
-            Addition, 
+            Addition,
             Subtraction,
             Multiplication,
             Division,
             Modulo,
         }
+        decimal inp1, inp2, resultnum = 0.0m;
+        bool isSecond = false;
+        bool isDecimal = false;
+        bool isNew = true;
+        decimal decimalPlace = 1.0m;
+        string currentExpression = "";
         Operation op = Operation.None;
 
         public MainWindow()
@@ -46,95 +48,74 @@ namespace Simple_Calculator
             Button button = (Button)sender;
 
             string? content = button.Content.ToString();
-            double contentVal = double.Parse(content);
+            decimal contentDecimal = Decimal.Parse(content);
 
-            if (isFirst)
+            if (isNew)
             {
-                
-                contentVal = Number_Handler(inp1, contentVal);
-                expression.Content = Expression_Updater(currExpr, content.ToString());
-                inp1 = contentVal;
-            }
-            else
-            {
-                Expression_Updater(currExpr, content.ToString());
-                contentVal = Number_Handler(inp2, contentVal);
-                inp2 = contentVal;
+                Resetter();
+                isNew = false;
             }
 
-            result.Content = (contentVal);
+            Number_Handler(contentDecimal);
+            Input_Display();
         }
 
         private void OperatorButton_Click(object sender, RoutedEventArgs e)
         {
-            Button button = (Button )sender; 
+            Button button = (Button)sender; 
 
             string? content = button.Content.ToString();
 
             switch(content)
             {
                 case "+":
-                    op = Operation.Addition;
-                    expression.Content = Expression_Updater(currExpr, " + ");
-                    break;
-                case "-":  
-                    op = Operation.Subtraction;
-                    expression.Content = Expression_Updater(currExpr, " - ");
-                    break;
-                case "*":
-                    op = Operation.Multiplication;
-                    expression.Content = Expression_Updater(currExpr, " x ");
-                    break;
+                    op = Operation.Addition; break;
+                case "-":
+                    op = Operation.Subtraction; break;
+                case "*": 
+                    op = Operation.Multiplication; break;
                 case "/":
-                    op = Operation.Division;
-                    expression.Content = Expression_Updater(currExpr, " / ");
-                    break;
+                    op = Operation.Division; break;
                 case "Modulo":
-                    op = Operation.Modulo; 
-                    expression.Content = Expression_Updater(currExpr, " mod ");
-                    break;
-                default:
-                    op = Operation.None;
-                    break;
+                    op = Operation.Modulo; break;
             }
-            isFirst = false;
+
+            Expression_Display(content);
+            
+            isDecimal = false;
+            decimalPlace = 1.0m;
+            isSecond = true;
+            isNew = false;
         }
 
         private void EqualsButton_Click(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
 
-            switch (op)
+            switch(op)
             {
                 case Operation.Addition:
-                    resultnum = inp1 + inp2;
-
-                    break;
+                    resultnum = inp1 + inp2; break;
                 case Operation.Subtraction:
-                    resultnum = inp1 - inp2;
-
-                    break;
+                    resultnum = inp1 - inp2; break;
                 case Operation.Multiplication:
-                    resultnum = inp1 * inp2;
-
-                    break;
-                case Operation.Division:   
-                    resultnum = inp1 / inp2;
-
-                    break;
+                    resultnum = inp1 * inp2; break;
+                case Operation.Division:
+                    resultnum = inp1 / inp2; break;
                 case Operation.Modulo:
-                    resultnum = inp1 % inp2;
-
-                    break;
+                    resultnum = inp1 % inp2; break;
+                default:
+                    resultnum = 0; break;
             }
+
+            Expression_Display("");
+            Result_Display();
 
             inp1 = resultnum;
             inp2 = 0;
-            isFirst = true;
-
-            expression.Content = currExpr + " = ";
-            currExpr = resultnum.ToString();
-            result.Content = resultnum;
+            isSecond = false;
+            currentExpression = "";
+            isNew = true;
         }
 
         private void DecimalButton_Click(object sender, RoutedEventArgs e)
@@ -142,37 +123,103 @@ namespace Simple_Calculator
             Button button = (Button)sender;
 
             isDecimal = true;
+
         }
 
-        private double Number_Handler(double currentInp, double newInp)
+        private void Number_Handler(decimal input)
         {
             if (!isDecimal)
             {
-                return (currentInp * 10 + newInp);
+                if (!isSecond)
+                {
+                    inp1 = (inp1 * 10) + input;
+                }
+                else
+                {
+                    inp2 = (inp2 * 10) + input;
+                }
             }
             else
             {
-                return (currentInp + 0.1);
+               if(!isSecond)
+               {
+                    inp1 = inp1 + (input / (10 * decimalPlace));
+                    decimalPlace *= 10;
+               }
+                else
+                {
+                    inp2 = inp2 + (input / (10 * decimalPlace));
+                    decimalPlace *= 10;
+                }
+            }
+        }
+
+        private void Input_Display() { 
+            
+            if (!isSecond)
+            {
+                result.Content = inp1; 
+            }
+            else
+            {
+                result.Content = inp2;
             }
         }
 
 
-        private string Expression_Updater(string curr, string entry)
+        private void Expression_Display(string operatorStr)
         {
-                currExpr = curr + entry;
-                return currExpr;  
+
+            if (!isSecond)
+            {
+                if (inp1 % 1 == 0)
+                {
+                    int wholenum = (int)inp1;
+                    currentExpression = $"{wholenum.ToString()} {operatorStr}";
+                    expression.Content = $"{wholenum.ToString()} {operatorStr}";
+                }
+                else
+                {
+                    currentExpression = $"{inp1.ToString()} {operatorStr}";
+                    expression.Content = $"{inp1.ToString()} {operatorStr}";
+                }
+            }
+            else
+            {
+                expression.Content = $"{currentExpression} {inp2.ToString()} = ";
+            }
+
         }
 
+        private void Result_Display()
+        {
+            if (resultnum % 1 == 0)
+            {
+                int wholenum = (int)resultnum;
+                result.Content = wholenum.ToString();
+            }
+            else
+                result.Content = resultnum;
+        }
+
+
+        private void Resetter()
+        {
+
+            inp1 = inp2 = resultnum = 0;
+            isSecond = false;
+            isDecimal = false;
+            decimalPlace = 1.0m;
+            currentExpression = "";
+            op = Operation.None;
+            result.Content = 0;
+            expression.Content = "";
+
+        }
         private void ClearerButton_Click(object sender,  EventArgs e)
         {
             Button button = (Button)sender;
-
-            inp1 = inp2 = resultnum = 0;
-            isFirst = true;
-            op = Operation.None;
-            currExpr = "";
-            result.Content = resultnum;
-            expression.Content = "";
+            Resetter();
         }
     }
 }
