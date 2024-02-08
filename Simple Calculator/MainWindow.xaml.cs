@@ -14,8 +14,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-CallConvThiscall BREAKS code
-
 namespace Simple_Calculator
 {
     /// <summary>
