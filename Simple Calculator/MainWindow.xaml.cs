@@ -13,8 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-line 16 will break the code
-
 namespace Simple_Calculator
 {
     /// <summary>
