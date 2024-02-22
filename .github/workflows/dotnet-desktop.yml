@@ -68,7 +68,7 @@ jobs:
         fetch-depth: 0
 
     # Install the .NET Core workload
-    - name: Install .NET Framework
+    - name: Install .NET Core
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 4.6.1
